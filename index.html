@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Catálogo</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+<style>
+body {
+  font-family: Arial;
+  background: #e8f5e9;
+  margin: 0;
+}
+
+/* TOPO */
+.topo {
+  background: #1b5e20;
+  padding: 20px;
+  text-align: center;
+  color: white;
+}
+
+.topo h1 {
+  margin: 0;
+}
+
+/* BARRA DE BUSCA */
+.barra {
+  padding: 15px;
+  text-align: center;
+  background: #2e7d32;
+}
+
+.barra input {
+  width: 80%;
+  max-width: 400px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+}
+
+/* FILTROS */
+.filtros {
+  text-align: center;
+  padding: 10px;
+}
+
+.filtros button {
+  margin: 5px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 20px;
+  background: #66bb6a;
+  color: white;
+  cursor: pointer;
+}
+
+/* PRODUTOS */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.produto {
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.produto:hover {
+  transform: scale(1.03);
+}
+
+.produto img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.nome {
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.preco {
+  color: #ff6b00;
+  font-weight: bold;
+}
+
+.botao {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #25D366;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+}
+</style>
+</head>
+
+<body>
+<!-- NAVBAR CORRIGIDA -->
+<nav class="navbar navbar-expand-lg" style="background:#1b5e20;">
+  <div class="container-fluid">
+
+    <!-- NOME DA LOJA -->
+    <a class="navbar-brand text-white fw-bold" href="#">
+      Top ultilidades
+    </a>
+
+    <!-- BOTÃO MOBILE -->
+    <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      ☰
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+
+      <!-- FILTROS -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <button class="btn btn-success me-2" onclick="filtrar('todos')">Todos</button>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-success me-2" onclick="filtrar('fone')">Fones</button>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-success me-2" onclick="filtrar('beleza')">Beleza</button>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-success me-2" onclick="filtrar('utilidade')">Utilidades</button>
+        </li>
+      </ul>
+
+      <!-- PESQUISA -->
+      <form class="d-flex">
+        <input 
+          id="pesquisa" 
+          class="form-control me-2" 
+          type="search" 
+          placeholder="🔍 Buscar produto..."
+        >
+      </form>
+
+    </div>
+  </div>
+</nav>
+
+<div class="container" id="listaProdutos"></div>
+
+<script>
+
+// 🔥 PRODUTOS
+const produtos = [
+ {
+    nome: "Fone de Ouvido P2",
+    preco: "6,50",
+    categoria: "fone",
+    imagem: "imagens/fone1.png"
+  },
+  {
+    nome: "Fone de Ouvido STARMEGA",
+    preco: "5,00",
+    categoria: "fone",
+    imagem: "imagens/fone2.png"
+  },
+  {
+    nome: "Redmi AirDots",
+    preco: "29,00",
+    categoria: "fone",
+    imagem: "imagens/fone3.png"
+  },
+  {
+    nome: "Fone TWS M10",
+    preco: "29,00",
+    categoria: "fone",
+    imagem: "imagens/fone4.png"
+  },
+  {
+    nome: "Fone i12 TWS",
+    preco: "29,00",
+    categoria: "fone",
+    imagem: "imagens/fone5.png"
+  },
+  {
+    nome: "Fone B-Max",     
+    preco: "29,00",
+    categoria: "fone",
+    imagem: "imagens/fone8.png"
+  },
+  {
+    nome: "Fone Everest JB950",
+    preco: "60,00",
+    categoria: "fone",
+    imagem: "imagens/fone7.png"
+  },
+  {
+    nome: "Fone JBL Wave 300 TWS",
+    preco: "60,00",
+    categoria: "fone",
+    imagem: "imagens/fone6.png"
+  },
+
+  
+   {
+    nome: "Kit Lápis de Olho com Apontador",
+    preco: "30,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza23.png"
+  },
+   {
+    nome: "Estojinho de Sombras Bella Femme",
+    preco: "15,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza36.png"
+  },
+  {
+    nome: "Kit Batom Colorido (6 cores)",
+    preco: "35,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza14.png"
+  },
+  {
+    nome: "Kit Brilho Labial Glitter 3D Colorido",
+    preco: "54,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza29.png"
+  },
+  {
+    nome: "Kit Gloss Labial Colorido (12 cores)",
+    preco: "72,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza40.png"
+  },
+  {
+    nome: "Kit Grampo de Cabelo Preto (cartela)",
+    preco: "7,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza13.png"
+  },
+  {
+    nome: "Kit Presilha de Cabelo Infantil",
+    preco: "5,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza11.png"
+  },
+  {
+    nome: "Kit Elástico de Cabelo (preto e colorido)",
+    preco: "12,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza22.png"
+  },
+  {
+    nome: "Kit Xuxinha + PomPom Colorido",
+    preco: "22,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza25.png"
+  },
+  {
+    nome: "Kit Elástico de Cabelo Colorido (cartela)",
+    preco: "60,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza27.png"
+  },
+  {
+    nome: "Presilha Tic Tac Preta/ Pinça",
+    preco: "15,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza24.png"
+  },
+  {
+    nome: "Pinça Coloridas Decoradas",
+    preco: "12,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza33.png"
+  },
+  {
+    nome: "Kit Elástico de Cabelo",
+    preco: "72,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza30.png"
+  },
+   {
+    nome: "Kit Elásticos de Silicone Coloridos ",
+    preco: "13,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza32.png"
+  },
+   {
+    nome: "Kit Presilhas de Cabelo Nuvem/Asa Transparente",
+    preco: "7,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza12.png"
+  },
+   {
+    nome: "Kit Mini Piranhas e Elásticos Candy Color",
+    preco: "7,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza21.png"
+  },
+   {
+    nome: "Kit Cartela de Brincos",
+    preco: "24,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza34.png"
+  },
+   {
+    nome: "Kit Escova de Cabelo Raquete Soft",
+    preco: "60,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza4.png"
+  },
+   {
+    nome: "Kit Escova de Cabelo Almofadada",
+    preco: "19,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza39.png"
+  },
+   {
+    nome: "Kit Pente Jacaré Profissional",
+    preco: "35,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza37.png"
+  },
+   {
+    nome: "Kit Pente de Pentes de Cabo Largo",
+    preco: "33,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza38.png"
+  },
+   {
+    nome: "Kit Pente de Pentes de Cabo Fino",
+    preco: "24,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza28.png"
+  },
+   {
+    nome: "Kit Pente Escova Polvo Flexível/PC com 12",
+    preco: "35,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza20.png"
+  },
+   {
+    nome: "Kit Pente Fino Tradicional Inquebrável",
+    preco: "24,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza3.png"
+  },
+   {
+    nome: "Kit Lixa de Pé com Cabo",
+    preco: "35,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza31.png"
+  },
+   {
+    nome: "Kit Lixa de Pé Anatômica Plástica",
+    preco: "33,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza5.png"
+  },
+   {
+    nome: "Kit Pacote de Lixas de Unha Tradicionais",
+    preco: "60,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza18.png"
+  },
+   {
+    nome: "Kit Cortadores de Unha",
+    preco: "60,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza15.png"
+  },
+   {
+    nome: "Mini Tesouras de Precisão",
+    preco: "5,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza6.png"
+  },
+   {
+    nome: "Navalhete Profissional para Barbeiro",
+    preco: "7,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza8.png"
+  },
+   {
+    nome: "Aparelho de Barbear Clássico de Metal",
+    preco: "6,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza9.png"
+  },
+   {
+    nome: "Costura Completo (Linhas de Várias Cores)",
+    preco: "48,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza7.png"
+  },
+  {
+    nome: "Kit de Manicure Profissional",
+    preco: "17,00",
+    categoria: "beleza",
+    imagem: "imagens/beleza10.png"
+  },
+  {
+    nome: "Cartela de Escovas de Dentes",
+    preco: "24,00",
+    categoria: "beleza",
+    imagem: "imagens/utilidades22.png"
+  },
+  // 👉 só continuar até 100 produtos
+];
+
+const container = document.getElementById("listaProdutos");
+
+// MOSTRAR
+function mostrar(lista) {
+  container.innerHTML = "";
+
+  lista.forEach(produto => {
+    const link = `https://wa.me/556184219570?text=Olá,%20quero%20${produto.nome}`;
+
+    container.innerHTML += `
+      <div class="produto">
+        <img src="${produto.imagem}">
+        <div class="nome">${produto.nome}</div>
+        <div class="preco">R$ ${produto.preco}</div>
+        <a class="botao" href="${link}">Comprar</a>
+      </div>
+    `;
+  });
+}
+
+// FILTRO
+function filtrar(tipo) {
+  if (tipo === "todos") {
+    mostrar(produtos);
+  } else {
+    mostrar(produtos.filter(p => p.categoria === tipo));
+  }
+}
+
+// PESQUISA
+document.getElementById("pesquisa").addEventListener("input", function() {
+  const valor = this.value.toLowerCase();
+
+  const resultado = produtos.filter(p =>
+    p.nome.toLowerCase().includes(valor)
+  );
+
+  mostrar(resultado);
+});
+
+mostrar(produtos);
+
+</script>
+
+</body>
+</html>
